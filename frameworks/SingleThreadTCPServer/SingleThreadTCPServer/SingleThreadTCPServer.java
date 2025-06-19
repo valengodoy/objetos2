@@ -64,18 +64,16 @@ public abstract class SingleThreadTCPServer {
         try (
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
-                beforeHandleClient(clientSocket);  //metodo hook
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Received message: " + inputLine + " from "
                         + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
                 
-                if (wordClose(inputLine)) {
+                if (inputLine.equalsIgnoreCase("")) {
                     break; // Client requested to close the connection
                 }
-                handleMessage(inputLine, out);
+                handleMessa ge(inputLine, out);
             }
-            afterHandleClient(clientSocket);
             System.out.println("Connection closed with " + clientSocket.getInetAddress().getHostAddress() + ":"
                     + clientSocket.getPort());
         } catch (IOException e) {
@@ -87,14 +85,5 @@ public abstract class SingleThreadTCPServer {
                 System.err.println("Error closing socket: " + e.getMessage());
             }
         }
-    }
-
-
-    public void beforeHandleClient(Socket clientSocket){}
-    public void afterHandleClient(Socket clientSocket){}
-
-    public boolean wordClose(String wordEnd){
-        return wordEnd.equalsIgnoreCase("chau")
-
     }
 }
